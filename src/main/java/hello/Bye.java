@@ -1,7 +1,12 @@
 package hello;
 
+import java.util.logging.Logger;
+
 public class Bye {
+
+    private static final Logger logger = Logger.getLogger(this.getClass().getName());
+
     public void saybye() {
-        System.out.println("Bye, World!");
+        logger.info("Bye, World!");
     }
 }

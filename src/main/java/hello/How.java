@@ -1,7 +1,12 @@
 package hello;
 
+import java.util.logging.Logger;
+
 public class How {
+
+    private static final Logger logger = Logger.getLogger(this.getClass().getName());
+
     public void sayHow() {
-        System.out.println("How are you, World!");
+        logger.info("How are you, World!");
     }
 }
