@@ -2,7 +2,7 @@ import java.util.logging.Logger;
 
 public class Doble {
 
-    private static final Logger logger = Logger.getLogger(this.getClass().getName());
+    private static final Logger logger = Logger.getLogger(Doble.class.getName());
 
     public void checkConditions(int a, int b, int c, int d) {
         // Bloque 1: Totalmente anidado
