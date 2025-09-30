@@ -1,252 +1,243 @@
-# Building Java Projects with Maven
-This guide walks you through using Maven to build a simple Java project.
+# git2
 
-## What you’ll build
-You’ll create an application that provides the time of day and then build it with Maven.
+This application was generated using JHipster 8.1.0, you can find documentation and help at [https://www.jhipster.tech/documentation-archive/v8.1.0](https://www.jhipster.tech/documentation-archive/v8.1.0).
 
-## What you’ll need
-+ A favorite text editor or IDE
-+ JDK 6 or later
-+ Install Maven
 
-## Install Maven.
-+ [Install Maven on Windows](https://www.baeldung.com/install-maven-on-windows-linux-mac#installing-maven-on-windows)
-+ [Install Maven on Linux](https://www.baeldung.com/install-maven-on-windows-linux-mac#installing-maven-on-linux)
-+ [Install Maven on Mac OSX](https://www.baeldung.com/install-maven-on-windows-linux-mac#installing-maven-on-mac-os-x)
+## Project Structure
 
-## Set up the project
-First you’ll need to setup a Java project for Maven to build. To keep the focus on Maven, make the project as simple as possible for now.
+Node is required for generation and recommended for development. `package.json` is always generated for a better development experience with prettier, commit hooks, scripts and so on.
 
-#### Create the directory structure
----
-+ Create a root project directory named `HelloWorldMaven` and `cd HelloWorldMaven`.
-+ In a project directory of your choosing, create the following subdirectory structure.
-+ For example, with `mkdir -p src/main/java/hello` on *nix systems:*
+In the project root, JHipster generates configuration files for tools like git, prettier, eslint, husky, and others that are well known and you can find references in the web.
 
-+ on Windows you can create this directory manually.
 
-    ```
-    └── src
-        └── main
-            └── java
-                └── hello
-    ```
-+ Within the `src/main/java/hello` directory, you can create any Java classes you want. To maintain consistency with the rest of this guide, create these two classes: `HelloWorld.java` and `Greeter.java`.
+`/src/*` structure follows default Java structure.
 
-+ `src/main/java/hello/HelloWorld.java`
-  ```
-  package hello;
-  public class HelloWorld {
-      public static void main(String[] args) {
-          Greeter greeter = new Greeter();
-          System.out.println(greeter.sayHello());
-      }
-  }
-  ```
+- `.yo-rc.json` - Yeoman configuration file
+JHipster configuration is stored in this file at `generator-jhipster` key. You may find `generator-jhipster-*` for specific blueprints configuration.
+- `.yo-resolve` (optional) - Yeoman conflict resolver
+Allows to use a specific action when conflicts are found skipping prompts for files that matches a pattern. Each line should match `[pattern] [action]` with pattern been a [Minimatch](https://github.com/isaacs/minimatch#minimatch) pattern and action been one of skip (default if ommited) or force. Lines starting with `#` are considered comments and are ignored.
+- `.jhipster/*.json` - JHipster entity configuration files
 
- + `src/main/java/hello/Greeter.java`
-    ```
-    package hello;
-    public class Greeter {
-        public String sayHello() {
-            return "Hello world!";
-        }
+- `npmw` - wrapper to use locally installed npm.
+JHipster installs Node and npm locally using the build tool by default. This wrapper makes sure npm is installed locally and uses it avoiding some differences different versions can cause. By using `./npmw` instead of the traditional `npm` you can configure a Node-less environment to develop or test your application.
+- `/src/main/docker` - Docker configurations for the application and services that the application depends on
+
+## Development
+
+Before you can build this project, you must install and configure the following dependencies on your machine:
+
+1. [Node.js][]: We use Node to run a development web server and build the project.
+   Depending on your system, you can install Node either from source or as a pre-packaged bundle.
+
+After installing Node, you should be able to run the following command to install development tools.
+You will only need to run this command when dependencies change in [package.json](package.json).
+
+```
+npm install
+```
+
+We use npm scripts and [Webpack][] as our build system.
+
+
+Run the following commands in two separate terminals to create a blissful development experience where your browser
+auto-refreshes when files change on your hard drive.
+
+```
+./mvnw
+npm start
+```
+
+Npm is also used to manage CSS and JavaScript dependencies used in this application. You can upgrade dependencies by
+specifying a newer version in [package.json](package.json). You can also run `npm update` and `npm install` to manage dependencies.
+Add the `help` flag on any command to see how you can use it. For example, `npm help update`.
+
+The `npm run` command will list all of the scripts available to run for this project.
+
+### PWA Support
+
+JHipster ships with PWA (Progressive Web App) support, and it's turned off by default. One of the main components of a PWA is a service worker.
+
+The service worker initialization code is commented out by default. To enable it, uncomment the following code in `src/main/webapp/index.html`:
+
+```html
+<script>
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker
+        .register('./service-worker.js')
+        .then(function() { console.log('Service Worker Registered'); });
     }
-    ```
-
-Now that you have a project that is ready to be built with Maven, the next step is to build this project with Maven.
-
-### Define a simple Maven build
----
-+ You need to create a Maven project definition.
-+ Maven projects are defined with an XML file named pom.xml.
-+ Among other things, this file gives the project’s name, version, and dependencies that it has on external libraries.
-+ Create a file named `pom.xml` at the root of the project and give it the following contents:
-
- `pom.xml`
-
-```
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <groupId>org.springframework</groupId>
-    <artifactId>jb-hello-world-maven</artifactId>
-    <packaging>jar</packaging>
-    <version>0.1.0</version>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <version>2.1</version>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                        <configuration>
-                            <transformers>
-                                <transformer
-                                    implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>hello.HelloWorld</mainClass>
-                                </transformer>
-                            </transformers>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
-</project>
-```
-With the exception of the optional `<packaging>` element, this is the simplest possible `pom.xml` file necessary to build a Java project. It includes the following details of the project configuration:
-+ `<modelVersion>`. POM model version (always 4.0.0).
-+ `<groupId>`. Group or organization that the project belongs to. Often expressed as an inverted domain name.
-+ `<artifactId>`. Name to be given to the project’s library artifact (for example, the name of its JAR or WAR file).
-+ `<version>`. Version of the project that is being built.
-+ `<packaging>` - How the project should be packaged. Defaults to "jar" for JAR file packaging. Use "war" for WAR file packaging.
-
-### Build Java code
----
-Maven is now ready to build the project. You can execute several build lifecycle goals with Maven now, including goals to compile the project’s code, create a library package (such as a JAR file), and install the library in the local Maven dependency repository.
-
-To try out the build, issue the following at the command line:
-
-  `mvn compile`
-  + This will run Maven, telling it to execute the compile goal. When it’s finished, you should find the compiled .class files in the target/classes directory.
-  + Since it’s unlikely that you’ll want to distribute or work with .class files directly, you’ll probably want to run the package goal instead:
-
-`mvn package`
-
-  + The package goal will compile your Java code, run any tests, and finish by packaging the code up in a JAR file within the target directory. The name of the JAR file will be based on the project’s `<artifactId>` and `<version>`. For example, given the minimal `pom.xml` file from before, the JAR file will be named gs-maven-0.1.0.jar.
-
-    **Note:**  If you’ve changed the value of <packaging> from "jar" to "war", the result will be a WAR file within the target directory instead of a JAR file.
-
-Maven also maintains a repository of dependencies on your local machine (usually in a .m2/repository directory in your home directory) for quick access to project dependencies. If you’d like to install your project’s JAR file to that local repository, then you should invoke the install goal:
-
-`mvn install`
-
-The install goal will compile, test, and package your project’s code and then copy it into the local dependency repository, ready for another project to reference it as a dependency.
-
-Speaking of dependencies, now it’s time to declare dependencies in the Maven build.
-
-### Declare Dependencies
----
-
-The simple Hello World sample is completely self-contained and does not depend on any additional libraries. Most applications, however, depend on external libraries to handle common and complex functionality.
-
-For example, suppose that in addition to saying "Hello World!", you want the application to print the current date and time. While you could use the date and time facilities in the native Java libraries, you can make things more interesting by using the Joda Time libraries.
-
-First, change HelloWorld.java to look like this:
-
-`src/main/java/hello/HelloWorld.java`
-
-```
-package hello;
-
-import org.joda.time.LocalTime;
-
-public class HelloWorld {
-    public static void main(String[] args) {
-		LocalTime currentTime = new LocalTime();
-		System.out.println("The current local time is: " + currentTime);
-		Greeter greeter = new Greeter();
-		System.out.println(greeter.sayHello());
-	}
-}
-```
-Here `HelloWorld` uses Joda Time’s `LocalTime` class to get and print the current time.
-
-If you were to run `mvn compile` to build the project now, the build would fail because you’ve not declared Joda Time as a compile dependency in the build. You can fix that by adding the following lines to `pom.xml` (within the `<project>` element):
-
-```
-<properties>
-    <java.version>1.8</java.version>
-</properties>
-
-<dependencies>
-    <dependency>
-        <groupId>joda-time</groupId>
-        <artifactId>joda-time</artifactId>
-        <version>2.2</version>
-    </dependency>
-</dependencies>
-```
-This block of XML declares a list of dependencies for the project. Specifically, it declares a single dependency for the Joda Time library. Within the `<dependency>` element, the dependency coordinates are defined by three sub-elements:
-
-+ `<groupId>` - The group or organization that the dependency belongs to.
-+ `<artifactId>` - The library that is required.
-+ `<version>` - The specific version of the library that is required.
-
-By default, all dependencies are scoped as `compile` dependencies. That is, they should be available at compile-time (and if you were building a WAR file, including in the /WEB-INF/libs folder of the WAR). Additionally, you may specify a `<scope>` element to specify one of the following scopes:
-
-+ `provided` - Dependencies that are required for compiling the project code, but that will be provided at runtime by a container running the code (e.g., the Java Servlet API).
-
-+ `test` - Dependencies that are used for compiling and running tests, but not required for building or running the project’s runtime code.
-
-Now if you run `mvn compile` or `mvn package`, Maven should resolve the Joda Time dependency from the Maven Central repository and the build will be successful.
-
-Here’s the completed `pom.xml` file:
-
-`pom.xml`
-
-```
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <groupId>org.springframework</groupId>
-    <artifactId>hello-world-maven</artifactId>
-    <packaging>jar</packaging>
-    <version>0.1.0</version>
-
-    <!-- tag::joda[] -->
-    <properties>
-        <java.version>1.8</java.version>
-    </properties>
-
-    <dependencies>
-        <dependency>
-            <groupId>joda-time</groupId>
-            <artifactId>joda-time</artifactId>
-            <version>2.2</version>
-        </dependency>
-    </dependencies>
-    <!-- end::joda[] -->
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <version>2.1</version>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                        <configuration>
-                            <transformers>
-                                <transformer
-                                    implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>hello.HelloWorld</mainClass>
-                                </transformer>
-                            </transformers>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
-</project>
+</script>
 ```
 
-### Run project
----
-+ To run this project run the following command.
+Note: [Workbox](https://developers.google.com/web/tools/workbox/) powers JHipster's service worker. It dynamically generates the `service-worker.js` file.
 
-    `java -cp target/jb-hello-world-maven-0.1.0.jar hello.HelloWorld`
+### Managing dependencies
+
+For example, to add [Leaflet][] library as a runtime dependency of your application, you would run following command:
+
+```
+npm install --save --save-exact leaflet
+```
+
+To benefit from TypeScript type definitions from [DefinitelyTyped][] repository in development, you would run following command:
+
+```
+npm install --save-dev --save-exact @types/leaflet
+```
+
+Then you would import the JS and CSS files specified in library's installation instructions so that [Webpack][] knows about them:
+Note: There are still a few other things remaining to do for Leaflet that we won't detail here.
+
+For further instructions on how to develop with JHipster, have a look at [Using JHipster in development][].
+
+
+## Building for production
+
+### Packaging as jar
+
+To build the final jar and optimize the git2 application for production, run:
+
+```
+./mvnw -Pprod clean verify
+```
+
+This will concatenate and minify the client CSS and JavaScript files. It will also modify `index.html` so it references these new files.
+To ensure everything worked, run:
+
+```
+java -jar target/*.jar
+```
+
+Then navigate to [http://localhost:8080](http://localhost:8080) in your browser.
+
+Refer to [Using JHipster in production][] for more details.
+
+### Packaging as war
+
+To package your application as a war in order to deploy it to an application server, run:
+
+```
+./mvnw -Pprod,war clean verify
+```
+
+### JHipster Control Center
+
+JHipster Control Center can help you manage and control your application(s). You can start a local control center server (accessible on http://localhost:7419) with:
+
+```
+docker compose -f src/main/docker/jhipster-control-center.yml up
+```
+
+## Testing
+
+### Spring Boot tests
+
+To launch your application's tests, run:
+
+```
+./mvnw verify
+```
+### Client tests
+
+Unit tests are run by [Jest][]. They're located in [src/test/javascript/](src/test/javascript/) and can be run with:
+
+```
+npm test
+```
+
+
+## Others
+
+### Code quality using Sonar
+
+Sonar is used to analyse code quality. You can start a local Sonar server (accessible on http://localhost:9001) with:
+
+```
+docker compose -f src/main/docker/sonar.yml up -d
+```
+
+Note: we have turned off forced authentication redirect for UI in [src/main/docker/sonar.yml](src/main/docker/sonar.yml) for out of the box experience while trying out SonarQube, for real use cases turn it back on.
+
+You can run a Sonar analysis with using the [sonar-scanner](https://docs.sonarqube.org/display/SCAN/Analyzing+with+SonarQube+Scanner) or by using the maven plugin.
+
+Then, run a Sonar analysis:
+
+```
+./mvnw -Pprod clean verify sonar:sonar -Dsonar.login=admin -Dsonar.password=admin
+```
+
+If you need to re-run the Sonar phase, please be sure to specify at least the `initialize` phase since Sonar properties are loaded from the sonar-project.properties file.
+
+```
+./mvnw initialize sonar:sonar -Dsonar.login=admin -Dsonar.password=admin
+```
+
+Additionally, Instead of passing `sonar.password` and `sonar.login` as CLI arguments, these parameters can be configured from [sonar-project.properties](sonar-project.properties) as shown below:
+
+```
+sonar.login=admin
+sonar.password=admin
+```
+
+For more information, refer to the [Code quality page][].
+
+### Using Docker to simplify development (optional)
+
+You can use Docker to improve your JHipster development experience. A number of docker-compose configuration are available in the [src/main/docker](src/main/docker) folder to launch required third party services.
+
+For example, to start a mysql database in a docker container, run:
+
+```
+docker compose -f src/main/docker/mysql.yml up -d
+```
+
+To stop it and remove the container, run:
+
+```
+docker compose -f src/main/docker/mysql.yml down
+```
+
+You can also fully dockerize your application and all the services that it depends on.
+To achieve this, first build a docker image of your app by running:
+
+```
+npm run java:docker
+```
+
+Or build a arm64 docker image when using an arm64 processor os like MacOS with M1 processor family running:
+
+```
+npm run java:docker:arm64
+```
+
+Then run:
+
+```
+docker compose -f src/main/docker/app.yml up -d
+```
+
+When running Docker Desktop on MacOS Big Sur or later, consider enabling experimental `Use the new Virtualization framework` for better processing performance ([disk access performance is worse](https://github.com/docker/roadmap/issues/7)).
+
+For more information refer to [Using Docker and Docker-Compose][], this page also contains information on the docker-compose sub-generator (`jhipster docker-compose`), which is able to generate docker configurations for one or several JHipster applications.
+
+## Continuous Integration (optional)
+
+To configure CI for your project, run the ci-cd sub-generator (`jhipster ci-cd`), this will let you generate configuration files for a number of Continuous Integration systems. Consult the [Setting up Continuous Integration][] page for more information.
+
+
+[JHipster Homepage and latest documentation]: https://www.jhipster.tech
+[JHipster 8.1.0 archive]: https://www.jhipster.tech/documentation-archive/v8.1.0
+[Using JHipster in development]: https://www.jhipster.tech/documentation-archive/v8.1.0/development/
+[Using Docker and Docker-Compose]: https://www.jhipster.tech/documentation-archive/v8.1.0/docker-compose
+[Using JHipster in production]: https://www.jhipster.tech/documentation-archive/v8.1.0/production/
+[Running tests page]: https://www.jhipster.tech/documentation-archive/v8.1.0/running-tests/
+[Code quality page]: https://www.jhipster.tech/documentation-archive/v8.1.0/code-quality/
+[Setting up Continuous Integration]: https://www.jhipster.tech/documentation-archive/v8.1.0/setting-up-ci/
+
+[Node.js]: https://nodejs.org/
+[NPM]: https://www.npmjs.com/
+[Webpack]: https://webpack.github.io/
+[BrowserSync]: https://www.browsersync.io/
+[Jest]: https://facebook.github.io/jest/
+[Leaflet]: https://leafletjs.com/
+[DefinitelyTyped]: https://definitelytyped.org/

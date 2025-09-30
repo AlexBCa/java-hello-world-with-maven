@@ -1,0 +1,29 @@
+{
+  "generator-jhipster": {
+    "applicationType": "monolith",
+    "authManagement": true,
+    "authType": "jwt",
+    "authenticationType": "jwt",
+    "baseName": "git2",
+    "clientFramework": "react",
+    "creationTimestamp": 1759227656084,
+    "dataBaseName": "git2",
+    "databaseType": "sql",
+    "devDatabaseType": "mysql",
+    "devServerPort": 9060,
+    "enableTranslation": true,
+    "entities": [],
+    "frontFramework": "react",
+    "internalization": true,
+    "javaPackageName": "ds.d2sd.sdf.dsf",
+    "jhipsterVersion": "8.1.0",
+    "jwtSecretKey": "NWUyMWE1NzdmMGQxOGRjNzFjMzJiOGFmMmJlYWU2MDFkYmQ2OGIzYmE5NDI1Y2JiNjVjYjZiOWJmMjNlMGY4NWNjZTI3NjdkZWU0YzdkYWJjMDU4NTY4Mjk4OTg5Y2Q3N2FiMDFlZmRlZDRkZmM4YzNkNTc3YzQyMzI4MjgzNTA=",
+    "languages": [
+      "de"
+    ],
+    "nativeLanguage": "de",
+    "packageName": "ds.d2sd.sdf.dsf",
+    "prodDatabaseType": "mysql",
+    "skipUserManagement": false
+  }
+}
